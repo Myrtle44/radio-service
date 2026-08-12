@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ООО «Радио Сервис» | Частный мастер Вячеслав Евгеньев</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f17;
+      --card-bg: rgba(19, 25, 36, 0.85);
+      --card-border: rgba(30, 41, 59, 0.8);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-color: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, rgba(255, 0, 85, 0.05) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    #webgl-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Навигация */
+    header {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      background: rgba(11, 15, 23, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-contacts {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+      gap: 4px;
+    }
+
+    .header-phones {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .phone-link {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .phone-link:hover {
+      color: var(--accent-color);
+    }
+
+    .work-hours, .header-address {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .work-hours-badge {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #22c55e;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: #000;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      color: #fff;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 50px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-color);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      margin-bottom: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Статистика */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 60px 0;
+      text-align: center;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 24px;
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
+    }
+
+    .stat-number {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Блок О Мастере */
+    .about-master {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 40px 0;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      backdrop-filter: blur(5px);
+    }
+
+    .master-photo-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .master-photo {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+      border: 3px solid var(--accent-color);
+      box-shadow: 0 0 25px var(--accent-glow);
+      display: block;
+    }
+
+    .master-info h3 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+
+    .master-subtitle {
+      color: var(--accent-color);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .master-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    /* Bento Grid */
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .bento-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(5px);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-color);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
+    }
+
+    .bento-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .bento-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+    }
+
+    .bento-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .bento-features {
+      list-style: none;
+    }
+
+    .bento-features li {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bento-features li::before {
+      content: "✓";
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    /* Порядок работы */
+    .process-wrapper {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      margin: 40px 0;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+    }
+
+    .process-toggle-header {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .process-toggle-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .process-toggle-icon {
+      font-size: 1rem;
+      color: var(--accent-color);
+      transition: transform 0.3s ease;
+    }
+
+    .process-content {
+      display: none;
+      padding: 0 24px 24px 24px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .process-content.open {
+      display: block;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .process-card {
+      background: rgba(11, 15, 23, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .process-step {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      background: rgba(56, 189, 248, 0.15);
+      padding: 4px 8px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .process-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .process-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Регион Выезда */
+    .location-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 40px 0;
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .cities-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .city-tag {
+      background: rgba(11, 15, 23, 0.6);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+
+    /* Контакты */
+    .contacts-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 40px 0 80px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .contacts-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .contact-card {
+      background: rgba(11, 15, 23, 0.6);
+      border: 1px solid var(--card-border);
+      padding: 16px 24px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-width: 200px;
+    }
+
+    .contact-card span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      #webgl-container { display: none !important; }
+      .hero h1 { font-size: 2rem; }
+      .header-right { align-items: flex-end; }
+      .header-contacts { align-items: flex-end; text-align: right; }
+      .header-phones { flex-direction: column; align-items: flex-end; gap: 2px; }
+      .phone-link { font-size: 0.85rem; }
+      .hero-buttons { flex-direction: column; }
+      .btn { width: 100%; text-align: center; }
+      .about-master { flex-direction: column; text-align: center; gap: 20px; }
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+</head>
+<body>
+
+  <div id="webgl-container"></div>
+
+  <header>
+    <div class="container nav-wrapper">
+      <div class="logo">ООО «РАДИО // СЕРВИС»</div>
+      <div class="header-right">
+        <div class="header-contacts">
+          <div class="header-phones">
+            <a href="tel:+79187992455" class="phone-link">+7 (918) 799-24-55</a>
+            <a href="tel:+79283641679" class="phone-link">+7 (928) 364-16-79</a>
+          </div>
+          <div class="work-hours">
+            <span class="work-hours-badge"></span> Пн–Сб: 9:00 – 20:00
+          </div>
+          <div class="header-address">
+            📍 г. Георгиевск, ул. Калинина, д. 134
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <span class="hero-tag">Оригинальные детали • Частный мастер</span>
+      <h1>Профессиональный ремонт бытовой техники</h1>
+      <p>Качественный ремонт любой сложности. Работаю напрямую, без посредников и наценок сервисных центров.</p>
+      <div class="hero-buttons">
+        <a href="#contacts" class="btn btn-primary">Вызвать мастера</a>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">Лет личного опыта</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">до 12 мес</div>
+          <div class="stat-label">Гарантия на работу</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Оригинальные запчасти</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Блок о мастере -->
+    <section class="container">
+      <div class="about-master">
+        <div class="master-photo-wrapper">
+          <img src="master.png" alt="Вячеслав Евгеньев — частный мастер" class="master-photo">
+        </div>
+        <div class="master-info">
+          <h3>Вячеслав Евгеньев</h3>
+          <div class="master-subtitle">Частный мастер по ремонту бытовой техники</div>
+          <p>Занимаюсь профессиональным ремонтом крупной и мелкой бытовой техники более 30 лет. Выезжаю к заказчику лично, провожу честную диагностику и называю итоговую цену до начала работ.</p>
+          <p>В отличие от крупных сервисов, не беру денег за работу посредников и менеджеров, даю личную гарантию на каждый выполненный заказ.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="container" style="padding: 20px 0;">
+      <h2 class="section-title">Что я ремонтирую</h2>
+      <p class="section-desc">Обслуживаю крупную и мелкую бытовую технику любых брендов.</p>
+
+      <div class="bento-grid">
+        <div class="bento-card">
+          <div>
+            <div class="bento-icon">⚙️</div>
+            <h3>Стиральные и сушильные машины</h3>
+            <p>Устранение протечек, замена подшипников, насосов, ТЭНов и ремонт плат управления.</p>
+          </div>
+          <ul class="bento-features">
+            <li>Не сливает / не греет воду</li>
+            <li>Сильно шумит или вибрирует</li>
+            <li>Замена манжеты и замка люка</li>
+          </ul>
+        </div>
+
+        <div class="bento-card">
+          <div>
+            <div class="bento-icon">🍽️</div>
+            <h3>Посудомоечные машины</h3>
+            <p>Чистка системы, замена циркуляционного насоса, устранение ошибок и протечек.</p>
+          </div>
+          <ul class="bento-features">
+            <li>Не моет / плохо сушит посуду</li>
+            <li>Устранение протечек в поддон</li>
+            <li>Замена ТЭНа и датчиков</li>
+          </ul>
+        </div>
+
+        <div class="bento-card">
+          <div>
+            <div class="bento-icon">⚡</div>
+            <h3>Микроволновки, пылесосы и мелкая техника</h3>
+            <p>Ремонт СВЧ-печей, моющих и роботов-пылесосов, кухонной и другой бытовой техники.</p>
+          </div>
+          <ul class="bento-features">
+            <li>СВЧ: не греет, искрит, не крутит</li>
+            <li>Пылесосы: замена моторов и плат</li>
+            <li>Мелкая кухонная и бытовая техника</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="process-wrapper">
+        <button class="process-toggle-header" onclick="toggleProcess()">
+          <span class="process-toggle-title">
+            <span>📋</span> Порядок работы
+          </span>
+          <span class="process-toggle-icon" id="processIcon">▼</span>
+        </button>
+
+        <div class="process-content" id="processContent">
+          <div class="process-grid">
+            <div class="process-card">
+              <span class="process-step">ШАГ 1</span>
+              <h3>Заявка или звонок</h3>
+              <p>Вы описываете симптомы поломки. Ориентирую по вероятным причинам и предварительной стоимости.</p>
+            </div>
+
+            <div class="process-card">
+              <span class="process-step">ШАГ 2</span>
+              <h3>Выезд и диагностика</h3>
+              <p>Приезжаю в согласованное время, провожу точную диагностику и называю окончательную цену до начала работ.</p>
+            </div>
+
+            <div class="process-card">
+              <span class="process-step">ШАГ 3</span>
+              <h3>Ремонт техники</h3>
+              <p>Выполняю ремонт на дому или организую вывоз техники в мастерскую при необходимости сложного восстановления.</p>
+            </div>
+
+            <div class="process-card">
+              <span class="process-step">ШАГ 4</span>
+              <h3>Проверка и гарантия</h3>
+              <p>Проверяем работу техники во всех режимах. Предоставляю гарантию на выполненную работу и детали.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="location-section">
+        <div class="location-badge">📍 Зона обслуживания</div>
+        <h2 class="section-title">География выезда</h2>
+        <p class="section-desc" style="margin-bottom: 10px;">Выезжаю на дом по г. Георгиевску и населённым пунктам в радиусе до 50 км.</p>
+        
+        <div class="cities-tags">
+          <span class="city-tag">Георгиевск</span>
+          <span class="city-tag">Георгиевский район</span>
+          <span class="city-tag">Александрийская</span>
+          <span class="city-tag">Лысогорская</span>
+          <span class="city-tag">Незлобная</span>
+          <span class="city-tag">Краснокумское</span>
+          <span class="city-tag">Обильное</span>
+          <span class="city-tag">Пятигорск</span>
+          <span class="city-tag">Новопавловск</span>
+          <span class="city-tag">Минеральные Воды</span>
+          <span class="city-tag">И близлежащие посёлки</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacts" class="container">
+      <div class="contacts-section">
+        <h2 class="section-title">Прямая связь с мастером</h2>
+        <p class="section-desc" style="margin-bottom: 0;">Звоните напрямую или переходите на профили на площадках — проконсультирую по поломке и сориентирую по стоимости.</p>
+
+        <div class="contacts-list">
+          <div class="contact-card">
+            <span>Телефон</span>
+            <a href="tel:+79187992455" class="phone-link">+7 (918) 799-24-55</a>
+          </div>
+
+          <div class="contact-card">
+            <span>Телефон</span>
+            <a href="tel:+79283641679" class="phone-link">+7 (928) 364-16-79</a>
+          </div>
+
+          <div class="contact-card">
+            <span>Профиль MAX</span>
+            <a href="https://max.ru/u/f9LHodD0cOL4CO1bJHTfe8iHGfJEZ7hTzCZK1N8AxDbDbxCzRrwRhQsHfMg" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 4px; padding: 6px 14px; font-size: 0.85rem;">Открыть MAX</a>
+          </div>
+
+          <div class="contact-card">
+            <span>Яндекс Услуги</span>
+            <a href="https://uslugi.yandex.ru/profile/EvgenevVyacheslav-1250575" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 4px; padding: 6px 14px; font-size: 0.85rem;">Яндекс Услуги</a>
+          </div>
+
+          <div class="contact-card">
+            <span>Объявление на Авито</span>
+            <a href="https://m.avito.ru/georgievsk/predlozheniya_uslug/remont_stiralnyh_i_posudomoechnyh_mashin_pylesosov_2161860023" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top: 4px; padding: 6px 14px; font-size: 0.85rem;">Открыть Авито</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function toggleProcess() {
+      const content = document.getElementById('processContent');
+      const icon = document.getElementById('processIcon');
+      
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        content.classList.add('open');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    const isMobilePhone = /Android.*Mobile|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 600;
+
+    if (!isMobilePhone) {
+      init3DScene();
+    }
+
+    function init3DScene() {
+      const container = document.getElementById('webgl-container');
+
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x0b0f17, 0.025);
+
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 0, 18);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ReinhardToneMapping;
+      container.appendChild(renderer.domElement);
+
+      const renderScene = new THREE.RenderPass(scene, camera);
+      const bloomPass = new THREE.UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        1.8,
+        0.5,
+        0.1
+      );
+
+      const composer = new THREE.EffectComposer(renderer);
+      composer.addPass(renderScene);
+      composer.addPass(bloomPass);
+
+      const light1 = new THREE.PointLight(0x38bdf8, 3, 30);
+      const light2 = new THREE.PointLight(0xff0055, 3, 30);
+      scene.add(light1, light2);
+
+      const washerMaterial = new THREE.LineBasicMaterial({ color: 0x38bdf8 });
+      const microMaterial = new THREE.LineBasicMaterial({ color: 0xff0055 });
+
+      const mainGroup = new THREE.Group();
+      scene.add(mainGroup);
+
+      function createLineObject(geometry, material) {
+        const edges = new THREE.EdgesGeometry(geometry);
+        return new THREE.LineSegments(edges, material);
+      }
+
+      function createWashingMachine() {
+        const group = new THREE.Group();
+
+        const body = createLineObject(new THREE.BoxGeometry(2, 2.4, 1.8), washerMaterial);
+        group.add(body);
+
+        const panelLine = createLineObject(new THREE.BoxGeometry(2, 0.02, 1.81), washerMaterial);
+        panelLine.position.y = 0.6;
+        group.add(panelLine);
+
+        const tray = createLineObject(new THREE.BoxGeometry(0.55, 0.35, 0.08), washerMaterial);
+        tray.position.set(-0.5, 0.88, 0.92);
+        group.add(tray);
+
+        const display = createLineObject(new THREE.BoxGeometry(0.4, 0.25, 0.08), washerMaterial);
+        display.position.set(0.05, 0.88, 0.92);
+        group.add(display);
+
+        const knob = createLineObject(new THREE.CylinderGeometry(0.18, 0.18, 0.1, 16), washerMaterial);
+        knob.rotation.x = Math.PI / 2;
+        knob.position.set(0.6, 0.88, 0.92);
+        group.add(knob);
+
+        const outerDoor = createLineObject(new THREE.CylinderGeometry(0.7, 0.7, 0.1, 24), washerMaterial);
+        outerDoor.rotation.x = Math.PI / 2;
+        outerDoor.position.set(0, -0.25, 0.92);
+        group.add(outerDoor);
+
+        const innerDoor = createLineObject(new THREE.CylinderGeometry(0.52, 0.52, 0.12, 24), washerMaterial);
+        innerDoor.rotation.x = Math.PI / 2;
+        innerDoor.position.set(0, -0.25, 0.95);
+        group.add(innerDoor);
+
+        const drum = createLineObject(new THREE.CylinderGeometry(0.65, 0.65, 1.0, 16), washerMaterial);
+        drum.rotation.x = Math.PI / 2;
+        drum.position.set(0, -0.25, 0.3);
+        group.add(drum);
+
+        const legGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.1, 8);
+        [[-0.8, -1.25, 0.7], [0.8, -1.25, 0.7], [-0.8, -1.25, -0.7], [0.8, -1.25, -0.7]].forEach(p => {
+          const leg = createLineObject(legGeo, washerMaterial);
+          leg.position.set(...p);
+          group.add(leg);
+        });
+
+        return group;
+      }
+
+      function createMicrowave() {
+        const group = new THREE.Group();
+
+        const body = createLineObject(new THREE.BoxGeometry(2.2, 1.3, 1.4), microMaterial);
+        group.add(body);
+
+        const windowObj = createLineObject(new THREE.BoxGeometry(1.2, 0.9, 0.05), microMaterial);
+        windowObj.position.set(-0.3, 0, 0.71);
+        group.add(windowObj);
+
+        const panel = createLineObject(new THREE.BoxGeometry(0.4, 0.9, 0.05), microMaterial);
+        panel.position.set(0.65, 0, 0.71);
+        group.add(panel);
+
+        const knob = createLineObject(new THREE.CylinderGeometry(0.12, 0.12, 0.08, 12), microMaterial);
+        knob.rotation.x = Math.PI / 2;
+        knob.position.set(0.65, 0.25, 0.73);
+        group.add(knob);
+
+        const legGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.08, 8);
+        [[-0.9, -0.68, 0.5], [0.9, -0.68, 0.5], [-0.9, -0.68, -0.5], [0.9, -0.68, -0.5]].forEach(p => {
+          const leg = createLineObject(legGeo, microMaterial);
+          leg.position.set(...p);
+          group.add(leg);
+        });
+
+        return group;
+      }
+
+      const animatedObjects = [];
+      const countPerType = 15;
+
+      for (let i = 0; i < countPerType; i++) {
+        const washer = createWashingMachine();
+        positionRandomly(washer);
+        mainGroup.add(washer);
+
+        const micro = createMicrowave();
+        positionRandomly(micro);
+        mainGroup.add(micro);
+      }
+
+      function positionRandomly(item) {
+        const initialY = (Math.random() - 0.5) * 20;
+        item.position.x = (Math.random() - 0.5) * 28;
+        item.position.y = initialY;
+        item.position.z = (Math.random() - 0.5) * 18;
+
+        const scale = 0.65 + Math.random() * 0.55;
+        item.scale.setScalar(scale);
+
+        item.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+
+        animatedObjects.push({
+          obj: item,
+          baseY: initialY,
+          rotX: (Math.random() - 0.5) * 0.018,
+          rotY: (Math.random() - 0.5) * 0.022,
+          floatSpeed: 0.8 + Math.random() * 1.2,
+          floatAmplitude: 0.3 + Math.random() * 0.5,
+          timeOffset: Math.random() * Math.PI * 2
+        });
+      }
+
+      let mouseX = 0, mouseY = 0;
+      let targetX = 0, targetY = 0;
+
+      function handleMove(clientX, clientY) {
+        mouseX = (clientX - window.innerWidth / 2) * 0.0006;
+        mouseY = (clientY - window.innerHeight / 2) * 0.0006;
+      }
+
+      window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      });
+
+      let scrollY = 0;
+      window.addEventListener('scroll', () => {
+        scrollY = window.scrollY;
+      });
+
+      let clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const time = clock.getElapsedTime();
+
+        animatedObjects.forEach(data => {
+          data.obj.rotation.x += data.rotX;
+          data.obj.rotation.y += data.rotY;
+          data.obj.position.y = data.baseY + Math.sin(time * data.floatSpeed + data.timeOffset) * data.floatAmplitude;
+        });
+
+        targetX += (mouseX - targetX) * 0.08;
+        targetY += (mouseY - targetY) * 0.08;
+        mainGroup.rotation.y = targetX + (scrollY * 0.001);
+        mainGroup.rotation.x = targetY + (scrollY * 0.0004);
+
+        light1.position.x = Math.sin(time * 1.2) * 15;
+        light1.position.y = Math.cos(time * 0.9) * 10;
+        light1.position.z = Math.cos(time * 1.2) * 15;
+
+        light2.position.x = Math.cos(time * 1.0) * 15;
+        light2.position.y = Math.sin(time * 1.4) * 10;
+        light2.position.z = Math.sin(time * 1.0) * 15;
+
+        composer.render();
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updatePrecisionMatrix ? camera.updatePrecisionMatrix() : camera.updateMatrix();
+        camera.updateMatrixWorld();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+  </script>
+</body>
+</html>
